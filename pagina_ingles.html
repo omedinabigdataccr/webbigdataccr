@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BigDataCCR - Software & Data Engineering</title>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Chart.js for charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #ffffff;
+            color: #333;
+            overflow-x: hidden; /* Prevent horizontal scroll */
+        }
+        header {
+            background-color: #ffffff; /* White background for header */
+            color: #000000; /* Black text in header */
+            padding: 20px; /* Adjust header padding */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #ddd;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: fixed; /* Fixed at the top */
+            width: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1000; /* Ensure it is on top of other elements */
+        }
+        .header-title {
+            font-size: 36px; /* Larger font size for title */
+            font-weight: bold;
+            color: #051c3d; /* Title text color */
+            text-transform: uppercase; /* Title in uppercase */
+            margin: 0;
+        }
+        .contact-info {
+            font-size: 16px;
+            margin-left: 20px; /* Move WhatsApp button to the left */
+        }
+        .contact-info a {
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: bold;
+            background-color: #97C7D0; /* Green background for WhatsApp button */
+            padding: 20px;
+            border-radius: 5px;
+        }
+        .contact-info a:hover {
+            background-color: #85b4b7; /* WhatsApp button hover color */
+        }
+        .logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 100px 0 30px; /* Adjust space for logo and chart */
+            margin-top: 80px; /* Margin to avoid fixed header */
+            max-width: 1200px; /* Max width adjustment */
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .logo-container img {
+            max-height: 250px; /* Enlarged logo size */
+            width: auto;
+        }
+        .chart-container {
+            max-width: 500px; /* Chart container size */
+            margin-left: 30px; /* Space between logo and chart */
+            flex-grow: 1;
+        }
+        .section {
+            padding: 30px; /* Reduced space in sections */
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .section h2 {
+            color: #051c3d;
+            font-size: 24px; /* Adjusted size */
+            margin-bottom: 15px; /* Reduced space */
+            position: relative;
+            padding-left: 30px;
+            text-transform: uppercase; /* Title in uppercase */
+        }
+        .section h2::before {
+            content: "\f0eb"; /* FontAwesome lightbulb icon */
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #97C7D0;
+            font-size: 24px;
+        }
+        .section p {
+            font-size: 18px;
+            line-height: 1.6;
+        }
+        .accordion-container {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+        .accordion {
+            cursor: pointer;
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            background-color: #f4f4f4;
+            font-size: 18px;
+            color: #051c3d;
+            transition: background-color 0.3s ease;
+            position: relative;
+            padding-left: 30px;
+        }
+        .accordion:hover {
+            background-color: #e9f5f8;
+        }
+        .accordion::before {
+            content: "\f0c9"; /* FontAwesome plus icon */
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #97C7D0;
+            font-size: 20px;
+        }
+        .panel {
+            display: none;
+            padding: 15px;
+            background-color: #ffffff;
+        }
+        .panel p {
+            margin: 0;
+        }
+        .section-subtitle {
+            font-size: 22px;
+            color: #051c3d;
+            margin-top: 20px; /* Reduced space */
+        }
+        .card-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .card {
+            flex: 1;
+            min-width: 300px;
+            background-color: #97C7D0;
+            color: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        .card:hover {
+            transform: scale(1.05);
+        }
+        .card-title {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        .card-description {
+            font-size: 16px;
+        }
+        footer {
+            background-color: #000000;
+            color: #ffffff;
+            text-align: center;
+            padding: 20px;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+        }
+        .form-container {
+            background-color: #f4f4f4;
+            padding: 30px; /* Reduced space */
+            border-radius: 8px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .form-container h2 {
+            color: #051c3d;
+            font-size: 26px; /* Adjusted size */
+            margin-bottom: 20px;
+            position: relative;
+            padding-left: 30px;
+        }
+        .form-container h2::before {
+            content: "\f003"; /* FontAwesome envelope icon */
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #97C7D0;
+            font-size: 24px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .form-group textarea {
+            height: 150px;
+            resize: vertical;
+        }
+        .form-group button {
+            background-color: #051c3d;
+            color: #ffffff;
+            border: none;
+            padding: 15px 20px;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .form-group button:hover {
+            background-color: #040b1b;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-title">BigDataCCR | Software, Business Intelligence & Data Engineering</div>
+
+	
+	<a href="index.html">Spanish</a>
+	
+
+
+        <div class="contact-info">
+            <a href="https://wa.me/50688627723" target="_blank">WhatsApp</a>
+        </div>
+    </header>
+
+    <!-- Logo and Chart Section -->
+    <div class="logo-container">
+        <img src="logo.png" alt="BigDataCCR Logo">
+        <div class="chart-container">
+            <canvas id="barChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Section: Data Management -->
+    <div class="section">
+        <h2>Data Management</h2>
+        <div class="accordion-container">
+            <div class="accordion">ETL and ELT</div>
+            <div class="panel">
+                <p>We implement ELT (Extract, Load, Transform) and ETL (Extract, Transform, Load) processes to integrate and transform data from various sources.</p>
+            </div>
+            <div class="accordion">Data Warehouse</div>
+            <div class="panel">
+                <p>We develop Data Warehouses to consolidate data from multiple sources, facilitating analysis and reporting.</p>
+            </div>
+            <div class="accordion">Advanced SQL</div>
+            <div class="panel">
+                <p>We provide support and development in advanced SQL to optimize queries and processes related to database management.</p>
+            </div>
+            <div class="accordion">Cloud Solutions</div>
+            <div class="panel">
+                <p>We offer cloud solutions to store, process, and analyze data in a scalable and secure manner, tailored to your business needs.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section: Software Development -->
+    <div class="section">
+        <h2>Software Development</h2>
+        <div class="card-container">
+            <div class="card">
+                <div class="card-title">Forms</div>
+                <div class="card-description">Design and development of customized forms to facilitate data capture and user interaction.</div>
+            </div>
+            <div class="card">
+                <div class="card-title">Web</div>
+                <div class="card-description">Creation of interactive and responsive web applications that adapt to your business needs.</div>
+            </div>
+            <div class="card">
+                <div class="card-title">Apps</div>
+                <div class="card-description">Development of mobile applications for iOS and Android platforms, optimizing the user experience on mobile devices.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section: Data Visualization -->
+    <div class="section">
+        <h2>Data Visualization</h2>
+        <div class="section">
+            <h2 class="section-subtitle">Business Intelligence Tools</h2>
+            <p>We implement advanced Business Intelligence tools to transform data into valuable insights for decision-making.</p>
+        </div>
+
+        <div class="section">
+            <h2 class="section-subtitle">Dashboards</h2>
+            <p>We develop dashboards that provide a clear and accessible view of key performance indicators, helping businesses monitor and manage their strategic objectives.</p>
+        </div>
+
+        <div class="section">
+            <h2 class="section-subtitle">High-Dimensional Visualization</h2>
+            <p>We use advanced technologies to represent complex and multidimensional data, facilitating the understanding of large volumes of information.</p>
+        </div>
+    </div>
+
+    <!-- Contact Section -->
+    <div class="form-container">
+        <h2>Contact Us</h2>
+        <form action="mailto:consultoria@bigdataccr.com" method="post" enctype="text/plain">
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="message">Message:</label>
+                <textarea id="message" name="message" required></textarea>
+            </div>
+            <div class="form-group">
+                <button type="submit">Send</button>
+            </div>
+        </form>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 BigDataCCR | All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Bar Chart
+        const ctx = document.getElementById('barChart').getContext('2d');
+        const barChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: Array.from({length: 15}, (_, i) => `Value ${i + 1}`),
+                datasets: [{
+                    label: '',
+                    data: Array.from({length: 15}, () => Math.floor(Math.random() * 100)),
+                    backgroundColor: '#051c3d',
+                    borderColor: '#051c3d',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        enabled: false
+                    }
+                },
+                scales: {
+                    x: {
+                        display: false
+                    },
+                    y: {
+                        display: false
+                    }
+                },
+                animation: {
+                    duration: 1000,
+                    easing: 'easeOutBounce'
+                }
+            }
+        });
+
+        // Accordion functionality
+        document.querySelectorAll('.accordion').forEach((accordion) => {
+            accordion.addEventListener('click', () => {
+                const panel = accordion.nextElementSibling;
+                accordion.classList.toggle('active');
+                if (panel.style.display === "block") {
+                    panel.style.display = "none";
+                } else {
+                    panel.style.display = "block";
+                }
+            });
+        });
+    </script>
+</body>
+</html>
